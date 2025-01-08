@@ -6,7 +6,7 @@ lpstr = True
 print("-----------------------------------------------------------------------------------------------------")
 print ("                                     A.M. BOOK SELLERS                                   ")
 print("-----------------------------------------------------------------------------------------------------")
-while lpstr == True:
+while lpstr == True: 
     print ("                                                MAIN MENU                                             ")
     print("-----------------------------------------------------------------------------------------------------")
     print("1: Admin")
@@ -23,8 +23,8 @@ while lpstr == True:
         print("3: Exit")
         a=input("Enter your choice:")
         if(a=='1'):
-            e=input("Enter no. of entry")
-            for j in e:
+            e=int(input("Enter no. of entry"))
+            for j in range(1,e+1):
                 i=input("Enter Book id:")
                 n=input("Enter book name:")
                 q=input("Enter qty")
@@ -32,11 +32,13 @@ while lpstr == True:
                 if float(r) == TypeError:
                     r = input('Enter valid Price ')
                 r=float(r)
-                df=pd.DataFrame({"BOOKID":[i],"BOOK NAME":[n],"QUANTITY":[q],"PRICE":[r]})
-                df.to_csv("D:\\ASHU\\codes\\Python\\Admin.csv")  # make only one csv
+                # df=pd.DataFrame({"BOOKID":[i],"BOOK NAME":[n],"QUANTITY":[q],"PRICE":[r]})
+                df = pd.read_csv("AM BOOKSELLERS.csv")
+                df.loc[len(df)+1]={"BOOKID":i,"BOOK NAME":n,"QUANTITY":q,"PRICE":r} #type: ignore
+                df.to_csv("AM BOOKSELLERS.csv",index=False)  # make only one csv
                 print("-------------------------BOOK ADDED SUCCESSFULLY-------------------------")
         if(a=='2'):
-            A=pd.read_csv("D:\\ASHU\\codes\\Python\\AM BOOKSELLERS.csv")
+            A=pd.read_csv("AM BOOKSELLERS.csv")
             print(A)
         if(a=='3'):
             print("------------------------- Exited Successfully -------------------------")
@@ -46,8 +48,8 @@ while lpstr == True:
     if(ch=='2'):
         print ("                                         PURCHASE MENU                                         ")
         print("                 Available books :             ")
-        D=pd.read_csv("D:\\ASHU\\codes\\Python\\AM BOOKSELLERS.csv")
-        D=pd.DataFrame(D,index=np.arange(1,(len(D))))
+        D=pd.read_csv("AM BOOKSELLERS.csv")
+        # D.index=np.arange(1,(len(D)))
         print(D)
         ID_L=[]
         L_L=[]
@@ -57,7 +59,7 @@ while lpstr == True:
         for m in range(n):
             ID=input("Enter book id:")
             L=input("Enter book name :")
-            if L not in list(D.loc['BOOKNAME']):
+            if L not in list(D['BOOK NAME']):
                 print('Enter Valid BookName.')
                 L1=input("Enter book name :")
                 L=L1
@@ -67,23 +69,15 @@ while lpstr == True:
                 n1 = input("Enter qty:")
                 N=n1
             N=int(N)
-            if(ID=='E1'):
-                P=N*50
-                s=s+P
-            elif(ID=='B1'):
-                P=N*200
-                s=s+P
-            elif(ID=='C1'):
-                P=N*250
-                s=s+P
-            elif(ID=='M1'):
-                P=N*150
-                s=s+P
-            elif(ID=='P1'):
-                P=N*300
-                s=s+P
-            else:
-                print('Enter valid BOOK ID.')
+            r=0
+            for i in range(len(D.index)):
+                if ID not in list(D['BOOKID']):
+                    r+=1
+                else:
+                    break
+            
+            P=N*D['PRICE'].iloc[r]
+            s=s+P
             ID_L.append(ID)
             L_L.append(L)
             N_L.append(N)
